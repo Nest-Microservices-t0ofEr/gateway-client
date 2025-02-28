@@ -18,8 +18,13 @@ export class ProductsController {
       );
   }
   @Get()
-  findAllProducts(@Query() paginationDto: PaginationDto){
-    return this.client.send({ cmd: 'findAll' }, paginationDto);
+  async findAllProducts(@Query() paginationDto: PaginationDto){
+    try {
+      const products = await firstValueFrom(this.client.send({ cmd: 'findAll' }, paginationDto));
+      return products;
+    } catch (error) {
+      throw new RpcException(error)
+    }
   }
   @Get(':id')
   findOne(@Param('id') id: string){
