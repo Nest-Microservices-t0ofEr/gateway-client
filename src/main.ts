@@ -14,7 +14,7 @@ async function bootstrap(){
             forbidNonWhitelisted: true,
         })
     );
-    app.useGlobalFilters(new RpcCustomExceptionFilter ())
+    app.useGlobalFilters(new RpcCustomExceptionFilter())
 
     console.log('Hola mundo - segundo cambio')
     await app.listen(envs.port);
