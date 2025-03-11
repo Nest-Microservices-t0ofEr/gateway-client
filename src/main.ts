@@ -16,7 +16,7 @@ async function bootstrap(){
     );
     app.useGlobalFilters(new RpcCustomExceptionFilter())
 
-    console.log('ClientGatewayMs - Testing trigger');
+    console.log('ClientGatewayMs - Testing trigger 2');
 
     await app.listen(envs.port);
     logger.log(`Gateway running on port ${envs.port}`)

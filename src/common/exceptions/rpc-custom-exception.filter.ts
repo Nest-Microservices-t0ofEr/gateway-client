@@ -6,7 +6,7 @@ export class RpcCustomExceptionFilter implements ExceptionFilter {
     catch(exception: RpcException, host: ArgumentsHost) {
         const ctx = host.switchToRpc();
         const rpcError = exception.getError();
-
+        console.log('ACA ESTA EL ERROR: ' + rpcError + ' ==== ' + ctx);
         // Si no hay rpcError, se devuelve un mensaje genérico de error interno
         if (!rpcError) {
             return {
