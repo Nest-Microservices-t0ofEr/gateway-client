@@ -24,7 +24,7 @@ export class RpcCustomExceptionFilter implements ExceptionFilter {
                 message = typeof errorObj.message === 'string' ? errorObj.message : 'Error desconocido';
             }
         }
-
+        console.log({ status, message });
         throw new RpcException({ status, message });
     }
 }
