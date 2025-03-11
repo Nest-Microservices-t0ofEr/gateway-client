@@ -7,11 +7,18 @@ export class RpcCustomExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToRpc();
         const rpcError = exception.getError();
 
-        if(rpcError.toString().includes('Empty response')) {
+        if (!rpcError) {
             return {
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                message: rpcError.toString().substring(0, rpcError.toString().indexOf('(') - 1),
-            }
+                message: exception,
+            };
+        }
+
+        if (typeof rpcError === 'string' && rpcError.includes('Empty response')) {
+            return {
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                message: rpcError.substring(0, rpcError.indexOf('(') - 1),
+            };
         }
 
         if (typeof rpcError === 'object' && 'status' in rpcError && 'message' in rpcError) {
@@ -23,7 +30,8 @@ export class RpcCustomExceptionFilter implements ExceptionFilter {
 
         return {
             status: HttpStatus.BAD_REQUEST,
-            message: rpcError,
+            message: typeof rpcError === 'string' ? rpcError : exception,
         };
     }
 }
+
