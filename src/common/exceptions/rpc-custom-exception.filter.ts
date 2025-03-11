@@ -4,27 +4,26 @@ import { RpcException } from '@nestjs/microservices';
 @Catch(RpcException)
 export class RpcCustomExceptionFilter implements ExceptionFilter {
     catch(exception: RpcException, host: ArgumentsHost) {
+        const ctx = host.switchToRpc();
         const rpcError = exception.getError();
-        
-        let status = HttpStatus.BAD_REQUEST;
-        let message = 'Unknown error';
 
-        if (typeof rpcError === 'string') {
-            if (rpcError.includes('Empty response')) {
-                status = HttpStatus.INTERNAL_SERVER_ERROR;
-                message = rpcError.substring(0, rpcError.indexOf('(')) || rpcError;
-            } else {
-                message = rpcError;
-            }
-        } else if (typeof rpcError === 'object' && rpcError !== null) {
-            const errorObj = rpcError as { status?: number; message?: string };
-
-            if ('status' in errorObj && 'message' in errorObj) {
-                status = typeof errorObj.status === 'number' ? errorObj.status : HttpStatus.BAD_REQUEST;
-                message = typeof errorObj.message === 'string' ? errorObj.message : 'Error desconocido';
+        if(rpcError.toString().includes('Empty response')) {
+            return {
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                message: rpcError.toString().substring(0, rpcError.toString().indexOf('(') - 1),
             }
         }
-        console.log({ status, message });
-        throw new RpcException({ status, message });
+
+        if (typeof rpcError === 'object' && 'status' in rpcError && 'message' in rpcError) {
+            return {
+                status: typeof rpcError.status !== 'number' ? HttpStatus.BAD_REQUEST : rpcError.status,
+                message: rpcError.message,
+            };
+        }
+
+        return {
+            status: HttpStatus.BAD_REQUEST,
+            message: rpcError,
+        };
     }
 }
