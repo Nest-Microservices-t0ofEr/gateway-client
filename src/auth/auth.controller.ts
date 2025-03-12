@@ -16,14 +16,12 @@ export class AuthController {
   @Inject(NATS_SERVICE) private readonly client: ClientProxy;
   @Post('register')
   registerUser(@Body() registerUserDto: RegisterUserDto) {
-    console.log(registerUserDto)
     return this.client.send('auth.register.user', registerUserDto).pipe(
       catchError((error) => {throw new RpcException(error.error)})
     );
   }
   @Post('login')
   loginUser(@Body() loginUserDto: LoginUserDto) {
-    console.log(loginUserDto);
     return this.client.send('auth.login.user', loginUserDto).pipe(
       catchError((error) => {throw new RpcException(error.error)})
     );
