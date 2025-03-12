@@ -13,17 +13,15 @@ export class RpcCustomExceptionFilter implements ExceptionFilter {
             const errorResponse = exception.getError();
             errorData = {
                 status: 'error',
-                message: typeof errorResponse === 'string' ? errorResponse : errorResponse.message,
-                error: typeof errorResponse === 'object' ? errorResponse.error : 500, // Código de error
+                error: exception
             };
-            console.log(errorData);
             return errorData;
         }
 
         // Si es otro tipo de error, respondemos con un mensaje genérico
         errorData= {
             status: 'error',
-            message: exception.message || 'Internal server error',
+            message: exception || 'Internal server error',
             error: 500,
         };
         console.log(errorData);
